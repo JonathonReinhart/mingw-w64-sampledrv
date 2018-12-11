@@ -1,7 +1,9 @@
 #!/bin/bash
 
+# Windows 7
 WINDOWS_MAJOR_VERSION=6
 WINDOWS_MINOR_VERSION=1
+
 
 CC="x86_64-w64-mingw32-gcc"
 
@@ -10,9 +12,24 @@ CCFLAGS+=" -Wno-sign-compare"
 CCFLAGS+=" -fms-extensions"
 CCFLAGS+=" -Wno-unknown-pragmas"
 
+WINNT_VERSION=$(printf 0x%04X $(((WINDOWS_MAJOR_VERSION << 8) | WINDOWS_MINOR_VERSION)))
+
 CPPDEFS=""
 CPPDEFS+=" -D_WIN32"
 CPPDEFS+=" -D_WIN64"
+
+##
+# Bug 2: Setting this to >= 6.1 and including ntifs.h causes this error:
+#
+# In file included from sampledrv.c:5:0:
+# /usr/share/mingw-w64/include/ddk/ntifs.h:4256:47: error: flexible array member in union
+#      STORAGE_QUERY_DEPENDENT_VOLUME_LEV1_ENTRY Lev1Depends[];
+#                                                ^~~~~~~~~~~
+# /usr/share/mingw-w64/include/ddk/ntifs.h:4257:47: error: flexible array member in union
+#      STORAGE_QUERY_DEPENDENT_VOLUME_LEV2_ENTRY Lev2Depends[];
+#                                                ^~~~~~~~~~~
+##
+#CPPDEFS+=" -D_WIN32_WINNT=${WINNT_VERSION}"
 
 CPPPATH=""
 CPPPATH+=" -I/usr/share/mingw-w64/include/ddk"
