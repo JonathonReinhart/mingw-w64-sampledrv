@@ -1,3 +1,14 @@
+/**
+ * Bug 1: Excluding this #define causes an error due to
+ * redefinition of ‘_InterlockedAdd64’
+ *
+ *   - ddk/wdm.h:68
+ *   - psdk_inc/intrin-impl.h:1078
+ *
+ * https://stackoverflow.com/a/50871446/119527
+ */
+#define __INTRINSIC_DEFINED__InterlockedAdd64
+
 #include <wdm.h>
 
 DRIVER_INITIALIZE DriverEntry;
